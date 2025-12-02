@@ -361,3 +361,9 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Angular
+pokedex-client/node_modules/
+pokedex-client/dist/
+pokedex-client/.angular/
+pokedex-client/.vscode/

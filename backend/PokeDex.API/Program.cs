@@ -19,6 +19,18 @@ builder.Services.AddScoped<IPokemonRepository, PokemonRepository>();
 // Application Services
 builder.Services.AddScoped<IDatabaseSeeder, DatabaseSeeder>();
 
+// Configure CORS for Angular frontend
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularDev", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200") // Angular dev server
+              .AllowAnyHeader()                      // Allow any HTTP headers
+              .AllowAnyMethod()                      // Allow GET, POST, PUT, DELETE, etc.
+              .AllowCredentials();                   // Allow cookies/auth headers
+    });
+});
+
 builder.Services.AddControllers();
 
 // Configure Swagger/OpenAPI
@@ -47,6 +59,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Enable CORS - MUST come before UseAuthorization
+app.UseCors("AllowAngularDev");
+
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
