@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PokeDex.API.DTOs;
 using PokeDex.Data.Repositories;
 
@@ -28,31 +27,7 @@ namespace PokeDex.API.Controllers
             try
             {
                 var pokemon = await _pokemonRepository.GetAllAsync();
-
-                var pokemonDtos = pokemon.Select(p => new PokemonDto
-                {
-                    Id = p.Id,
-                    PokedexNumber = p.PokedexNumber,
-                    Name = p.Name,
-                    HP = p.HP,
-                    Attack = p.Attack,
-                    Defense = p.Defense,
-                    SpecialAttack = p.SpecialAttack,
-                    SpecialDefense = p.SpecialDefense,
-                    Speed = p.Speed,
-                    PrimaryType = new PokemonTypeDto
-                    {
-                        Id = p.PrimaryType.Id,
-                        Name = p.PrimaryType.Name
-                    },
-                    SecondaryType = p.SecondaryType != null ? new PokemonTypeDto
-                    {
-                        Id = p.SecondaryType.Id,
-                        Name = p.SecondaryType.Name
-                    } : null
-                }).ToList();
-
-                return Ok(pokemonDtos);
+                return Ok(pokemon.Select(p => p.ToDto()).ToList());
             }
             catch (Exception ex)
             {
@@ -71,39 +46,15 @@ namespace PokeDex.API.Controllers
         {
             try
             {
-                var pokemon = await _pokemonRepository.GetAllAsync();
-                var foundPokemon = pokemon.FirstOrDefault(p => p.Id == id);
+                var pokemon = await _pokemonRepository.GetByIdAsync(id);
 
-                if (foundPokemon == null)
+                if (pokemon == null)
                 {
                     _logger.LogWarning("Pokemon with ID {PokemonId} not found", id);
                     return NotFound($"Pokemon with ID {id} not found");
                 }
 
-                var pokemonDto = new PokemonDto
-                {
-                    Id = foundPokemon.Id,
-                    PokedexNumber = foundPokemon.PokedexNumber,
-                    Name = foundPokemon.Name,
-                    HP = foundPokemon.HP,
-                    Attack = foundPokemon.Attack,
-                    Defense = foundPokemon.Defense,
-                    SpecialAttack = foundPokemon.SpecialAttack,
-                    SpecialDefense = foundPokemon.SpecialDefense,
-                    Speed = foundPokemon.Speed,
-                    PrimaryType = new PokemonTypeDto
-                    {
-                        Id = foundPokemon.PrimaryType.Id,
-                        Name = foundPokemon.PrimaryType.Name
-                    },
-                    SecondaryType = foundPokemon.SecondaryType != null ? new PokemonTypeDto
-                    {
-                        Id = foundPokemon.SecondaryType.Id,
-                        Name = foundPokemon.SecondaryType.Name
-                    } : null
-                };
-
-                return Ok(pokemonDto);
+                return Ok(pokemon.ToDto());
             }
             catch (Exception ex)
             {
@@ -130,30 +81,7 @@ namespace PokeDex.API.Controllers
                     return NotFound($"Pokemon #{pokedexNumber} not found");
                 }
 
-                var pokemonDto = new PokemonDto
-                {
-                    Id = pokemon.Id,
-                    PokedexNumber = pokemon.PokedexNumber,
-                    Name = pokemon.Name,
-                    HP = pokemon.HP,
-                    Attack = pokemon.Attack,
-                    Defense = pokemon.Defense,
-                    SpecialAttack = pokemon.SpecialAttack,
-                    SpecialDefense = pokemon.SpecialDefense,
-                    Speed = pokemon.Speed,
-                    PrimaryType = new PokemonTypeDto
-                    {
-                        Id = pokemon.PrimaryType.Id,
-                        Name = pokemon.PrimaryType.Name
-                    },
-                    SecondaryType = pokemon.SecondaryType != null ? new PokemonTypeDto
-                    {
-                        Id = pokemon.SecondaryType.Id,
-                        Name = pokemon.SecondaryType.Name
-                    } : null
-                };
-
-                return Ok(pokemonDto);
+                return Ok(pokemon.ToDto());
             }
             catch (Exception ex)
             {

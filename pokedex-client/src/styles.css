@@ -1,1 +1,128 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global styles */
+
+:root {
+  --bg: #f1f5f9;
+  --card-bg: #ffffff;
+  --border: #cbd5e1;
+  --text: #0f172a;
+  --muted: #64748b;
+  --accent: #dc2626;
+  --header-bg: #b91c1c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.error-banner {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  border-radius: 0.5rem;
+  padding: 0.6rem 0.9rem;
+}
+
+input[type='text'],
+input[type='search'] {
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  font: inherit;
+  background: var(--card-bg);
+  color: var(--text);
+}
+
+input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.btn {
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--card-bg);
+  color: var(--text);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn:hover:not(:disabled) {
+  filter: brightness(0.95);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.btn-danger {
+  background: transparent;
+  border-color: #fca5a5;
+  color: #b91c1c;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #fef2f2;
+}
+
+.btn-small {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.85rem;
+}
+
+/* Pokemon type badges */
+.chip {
+  display: inline-block;
+  padding: 0.1rem 0.55rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+  text-transform: capitalize;
+  background: #64748b;
+}
+
+.type-normal { background: #a8a77a; }
+.type-fire { background: #ee8130; }
+.type-water { background: #6390f0; }
+.type-electric { background: #f7d02c; color: #1f2937; }
+.type-grass { background: #7ac74c; }
+.type-ice { background: #96d9d6; color: #1f2937; }
+.type-fighting { background: #c22e28; }
+.type-poison { background: #a33ea1; }
+.type-ground { background: #e2bf65; color: #1f2937; }
+.type-flying { background: #a98ff3; }
+.type-psychic { background: #f95587; }
+.type-bug { background: #a6b91a; }
+.type-rock { background: #b6a136; }
+.type-ghost { background: #735797; }
+.type-dragon { background: #6f35fc; }
+.type-dark { background: #705746; }
+.type-steel { background: #b7b7ce; color: #1f2937; }
+.type-fairy { background: #d685ad; }

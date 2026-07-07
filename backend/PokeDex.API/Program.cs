@@ -15,9 +15,11 @@ builder.Services.AddHttpClient<IPokeApiService, PokeApiService>();
 
 // Repository Layer
 builder.Services.AddScoped<IPokemonRepository, PokemonRepository>();
+builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 
 // Application Services
 builder.Services.AddScoped<IDatabaseSeeder, DatabaseSeeder>();
+builder.Services.AddScoped<ITeamService, TeamService>();
 
 // Configure CORS for Angular frontend
 builder.Services.AddCors(options =>

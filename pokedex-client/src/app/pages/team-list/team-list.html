@@ -1,0 +1,51 @@
+<section class="page">
+  <header class="page-header">
+    <h1>My Teams</h1>
+    <form class="create-form" (ngSubmit)="createTeam()">
+      <input
+        type="text"
+        name="teamName"
+        placeholder="New team name…"
+        maxlength="50"
+        [(ngModel)]="newTeamName"
+      />
+      <button type="submit" class="btn btn-primary" [disabled]="!newTeamName.trim()">
+        Create Team
+      </button>
+    </form>
+  </header>
+
+  @if (error()) {
+    <p class="error-banner">{{ error() }}</p>
+  }
+
+  @if (loading()) {
+    <p class="muted">Loading teams…</p>
+  } @else if (teams().length === 0) {
+    <div class="empty-state">
+      <p>No teams yet.</p>
+      <p class="muted">Create your first team above, then add up to six Pokémon to it.</p>
+    </div>
+  } @else {
+    <ul class="team-grid">
+      @for (team of teams(); track team.id) {
+        <li class="team-card">
+          <a class="team-card-link" [routerLink]="['/teams', team.id]">
+            <h2>{{ team.name }}</h2>
+            <p class="muted">{{ team.members.length }} / 6 Pokémon</p>
+            <div class="member-chips">
+              @for (member of team.members; track member.teamPokemonId) {
+                <span class="chip type-{{ member.pokemon.primaryType.name.toLowerCase() }}">
+                  {{ member.pokemon.name }}
+                </span>
+              } @empty {
+                <span class="muted">Empty team</span>
+              }
+            </div>
+          </a>
+          <button class="btn btn-danger" (click)="deleteTeam(team)">Delete</button>
+        </li>
+      }
+    </ul>
+  }
+</section>

@@ -12,6 +12,14 @@ namespace PokeDex.Data.Repositories
             _context = context;
         }
 
+        public async Task<Pokemon?> GetByIdAsync(int id)
+        {
+            return await _context.Pokemon
+                .Include(p => p.PrimaryType)
+                .Include(p => p.SecondaryType)
+                .FirstOrDefaultAsync(p => p.Id == id);
+        }
+
         public async Task<Pokemon?> GetByPokedexNumberAsync(int pokedexNumber)
         {
             return await _context.Pokemon

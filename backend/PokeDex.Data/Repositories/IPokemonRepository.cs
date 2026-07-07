@@ -4,6 +4,7 @@ namespace PokeDex.Data.Repositories
 {
     public interface IPokemonRepository
     {
+        Task<Pokemon?> GetByIdAsync(int id);
         Task<Pokemon?> GetByPokedexNumberAsync(int pokedexNumber);
         Task<List<Pokemon>> GetAllAsync();
         Task<Pokemon> AddAsync(Pokemon pokemon);

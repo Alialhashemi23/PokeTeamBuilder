@@ -1,0 +1,109 @@
+<section class="page">
+  <a routerLink="/teams" class="back-link">← All teams</a>
+
+  @if (error()) {
+    <p class="error-banner">{{ error() }}</p>
+  }
+
+  @if (loading()) {
+    <p class="muted">Loading team…</p>
+  } @else if (team(); as currentTeam) {
+    <header class="page-header">
+      @if (renaming()) {
+        <form class="rename-form" (ngSubmit)="saveRename()">
+          <input type="text" name="teamName" maxlength="50" [(ngModel)]="renameValue" />
+          <button type="submit" class="btn btn-primary" [disabled]="!renameValue.trim()">Save</button>
+          <button type="button" class="btn" (click)="cancelRename()">Cancel</button>
+        </form>
+      } @else {
+        <h1>
+          {{ currentTeam.name }}
+          <button class="btn btn-small" (click)="startRename()">Rename</button>
+        </h1>
+      }
+      <p class="muted">{{ currentTeam.members.length }} / 6 Pokémon</p>
+    </header>
+
+    <ul class="slot-grid">
+      @for (slot of slots(); track $index) {
+        @if (slot) {
+          <li class="slot filled">
+            <span class="dex-number">#{{ slot.pokemon.pokedexNumber }}</span>
+            <h3 class="pokemon-name">{{ slot.pokemon.name }}</h3>
+            <div class="type-badges">
+              <span class="chip type-{{ slot.pokemon.primaryType.name.toLowerCase() }}">
+                {{ slot.pokemon.primaryType.name }}
+              </span>
+              @if (slot.pokemon.secondaryType; as secondary) {
+                <span class="chip type-{{ secondary.name.toLowerCase() }}">{{ secondary.name }}</span>
+              }
+            </div>
+            <dl class="stats">
+              <div><dt>HP</dt><dd>{{ slot.pokemon.hp }}</dd></div>
+              <div><dt>Atk</dt><dd>{{ slot.pokemon.attack }}</dd></div>
+              <div><dt>Def</dt><dd>{{ slot.pokemon.defense }}</dd></div>
+              <div><dt>SpA</dt><dd>{{ slot.pokemon.specialAttack }}</dd></div>
+              <div><dt>SpD</dt><dd>{{ slot.pokemon.specialDefense }}</dd></div>
+              <div><dt>Spe</dt><dd>{{ slot.pokemon.speed }}</dd></div>
+            </dl>
+            <button class="btn btn-danger btn-small" (click)="removeMember(slot)">Remove</button>
+          </li>
+        } @else {
+          <li class="slot empty"><span class="muted">Empty slot</span></li>
+        }
+      }
+    </ul>
+
+    <section class="picker">
+      <header class="picker-header">
+        <h2>Add Pokémon</h2>
+        <input
+          type="search"
+          placeholder="Search by name, number, or type…"
+          [ngModel]="search()"
+          (ngModelChange)="search.set($event)"
+        />
+      </header>
+
+      @if (isFull()) {
+        <p class="muted">Team is full — remove a Pokémon to add another.</p>
+      }
+
+      @if (allPokemon().length === 0) {
+        <p class="muted">No Pokémon available yet.</p>
+      } @else {
+        <ul class="picker-list">
+          @for (pokemon of filteredPokemon(); track pokemon.id) {
+            <li class="picker-row">
+              <span class="dex-number">#{{ pokemon.pokedexNumber }}</span>
+              <span class="pokemon-name">{{ pokemon.name }}</span>
+              <span class="type-badges">
+                <span class="chip type-{{ pokemon.primaryType.name.toLowerCase() }}">
+                  {{ pokemon.primaryType.name }}
+                </span>
+                @if (pokemon.secondaryType; as secondary) {
+                  <span class="chip type-{{ secondary.name.toLowerCase() }}">{{ secondary.name }}</span>
+                }
+              </span>
+              @if (memberPokemonIds().has(pokemon.id)) {
+                <span class="muted on-team">On team</span>
+              } @else {
+                <button
+                  class="btn btn-primary btn-small"
+                  [disabled]="isFull()"
+                  (click)="addPokemon(pokemon)"
+                >
+                  Add
+                </button>
+              }
+            </li>
+          } @empty {
+            <li class="picker-row muted">No Pokémon match “{{ search() }}”</li>
+          }
+        </ul>
+      }
+    </section>
+  } @else {
+    <p class="muted">Team not found.</p>
+  }
+</section>
