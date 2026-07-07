@@ -19,6 +19,8 @@ namespace PokeDex.Core.Models
         public int SpecialDefense { get; set; }
         public int Speed { get; set; }
 
+        public string? SpriteUrl { get; set; }
+
         public int PrimaryTypeId { get; set; }
         public int? SecondaryTypeId { get; set; }
 

@@ -16,5 +16,6 @@ namespace PokeDex.Core.Models.DTOs
         public int Speed { get; set; }
         public string PrimaryType { get; set; } = string.Empty;
         public string? SecondaryType { get; set; }
+        public string? SpriteUrl { get; set; }
     }
 }

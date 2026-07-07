@@ -22,33 +22,27 @@ The end-to-end loop: ingest Pokémon data, expose it over REST, build teams in a
 
 ---
 
-## 🔨 M1 — Make It Feel Real *(next up)*
+## ✅ M1 — Make It Feel Real *(shipped)*
 
 Cheap, high-impact polish. Goal: someone can clone the repo and be building teams in
 two commands, and the app looks like a Pokémon app.
 
-### 1.1 Pokémon sprites
-Store each Pokémon's sprite URL during ingestion and show artwork everywhere a
-Pokémon appears (picker rows, team slots, team cards).
-- PokeAPI already returns sprite URLs in the payload we fetch — add a `SpriteUrl`
-  column + migration, extend the seeder mapping, render in UI.
-- **Done when:** every Pokémon in the UI shows its sprite; re-seeding backfills
-  existing rows.
+### 1.1 Pokémon sprites ✅
+Official-artwork sprite URLs are stored during ingestion (`SpriteUrl` column +
+migration) and rendered in picker rows, team slots, and team cards. Re-seeding
+backfills sprites onto rows seeded before sprites were tracked.
 
-### 1.2 Zero-touch startup
-Remove the manual migration + seed steps.
-- Apply EF migrations on startup; seed automatically if the Pokémon table is empty.
-- Keep `POST /api/admin/seed` for re-seeding / fetching more generations.
-- **Done when:** `dotnet run` + `npm start` on a fresh machine yields a working,
-  populated app with no extra steps.
+### 1.2 Zero-touch startup ✅
+Migrations apply on startup and an empty database seeds itself from PokeAPI;
+failures are logged without blocking startup. `POST /api/admin/seed` remains for
+re-seeding / fetching more generations.
 
-### 1.3 Template cleanup
-- Delete `WeatherForecastController` and `WeatherForecast.cs`.
-- **Done when:** no scaffold leftovers in the API surface or Swagger.
+### 1.3 Template cleanup ✅
+`WeatherForecastController` and `WeatherForecast.cs` removed.
 
 ---
 
-## 📋 M2 — Pokédex Browsing
+## 🔨 M2 — Pokédex Browsing *(next up)*
 
 A standalone Pokédex page, independent of team building.
 

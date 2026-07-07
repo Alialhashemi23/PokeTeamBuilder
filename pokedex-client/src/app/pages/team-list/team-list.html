@@ -35,9 +35,19 @@
             <p class="muted">{{ team.members.length }} / 6 Pokémon</p>
             <div class="member-chips">
               @for (member of team.members; track member.teamPokemonId) {
-                <span class="chip type-{{ member.pokemon.primaryType.name.toLowerCase() }}">
-                  {{ member.pokemon.name }}
-                </span>
+                @if (member.pokemon.spriteUrl) {
+                  <img
+                    class="member-sprite"
+                    [src]="member.pokemon.spriteUrl"
+                    [alt]="member.pokemon.name"
+                    [title]="member.pokemon.name"
+                    loading="lazy"
+                  />
+                } @else {
+                  <span class="chip type-{{ member.pokemon.primaryType.name.toLowerCase() }}">
+                    {{ member.pokemon.name }}
+                  </span>
+                }
               } @empty {
                 <span class="muted">Empty team</span>
               }

@@ -53,6 +53,27 @@
   justify-content: center;
 }
 
+.slot-sprite {
+  width: 6rem;
+  height: 6rem;
+  object-fit: contain;
+  align-self: center;
+}
+
+.picker-sprite {
+  width: 2.5rem;
+  height: 2.5rem;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.picker-sprite.placeholder {
+  display: inline-block;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1px dashed var(--border);
+}
+
 .slot .pokemon-name {
   margin: 0;
   font-size: 1.05rem;

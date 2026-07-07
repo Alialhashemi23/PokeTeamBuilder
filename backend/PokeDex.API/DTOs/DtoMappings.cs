@@ -20,6 +20,7 @@ namespace PokeDex.API.DTOs
                 SpecialAttack = pokemon.SpecialAttack,
                 SpecialDefense = pokemon.SpecialDefense,
                 Speed = pokemon.Speed,
+                SpriteUrl = pokemon.SpriteUrl,
                 PrimaryType = pokemon.PrimaryType.ToDto(),
                 SecondaryType = pokemon.SecondaryType?.ToDto()
             };

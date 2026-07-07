@@ -10,6 +10,7 @@ export interface Pokemon {
     specialAttack: number;
     specialDefense: number;
     speed: number;
+    spriteUrl?: string | null;
     primaryType: PokemonType;
     secondaryType?: PokemonType;
 }

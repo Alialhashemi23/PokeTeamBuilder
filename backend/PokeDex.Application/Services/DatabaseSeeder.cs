@@ -46,8 +46,8 @@ namespace PokeDex.Application.Services
                 var newPokemon = new List<Pokemon>();
                 foreach (var dto in fetchedPokemonDtos)
                 {
-                    var exists = await _pokemonRepository.ExistsAsync(dto.PokedexNumber);
-                    if (!exists)
+                    var existing = await _pokemonRepository.GetByPokedexNumberAsync(dto.PokedexNumber);
+                    if (existing == null)
                     {
                         if (!typeMap.TryGetValue(dto.PrimaryType.ToLower(), out var primaryTypeId))
                         {
@@ -79,10 +79,17 @@ namespace PokeDex.Application.Services
                             SpecialAttack = dto.SpecialAttack,
                             SpecialDefense = dto.SpecialDefense,
                             Speed = dto.Speed,
+                            SpriteUrl = dto.SpriteUrl,
                             PrimaryTypeId = primaryTypeId,
                             SecondaryTypeId = secondaryTypeId
                         };
                         newPokemon.Add(pokemon);
+                    }
+                    else if (!string.IsNullOrEmpty(dto.SpriteUrl) && existing.SpriteUrl != dto.SpriteUrl)
+                    {
+                        // Backfill sprites for Pokemon seeded before sprites were tracked
+                        existing.SpriteUrl = dto.SpriteUrl;
+                        result.PokemonUpdated++;
                     }
                     else
                     {
@@ -93,9 +100,14 @@ namespace PokeDex.Application.Services
                 if (newPokemon.Any())
                 {
                     await _pokemonRepository.AddRangeAsync(newPokemon);
-                    await _pokemonRepository.SaveChangesAsync();
                     result.PokemonAdded = newPokemon.Count;
-                    _logger.LogInformation("Added {Count} new Pokemon to database", newPokemon.Count);
+                }
+
+                if (newPokemon.Any() || result.PokemonUpdated > 0)
+                {
+                    await _pokemonRepository.SaveChangesAsync();
+                    _logger.LogInformation(
+                        "Added {Added} new Pokemon, updated {Updated}", result.PokemonAdded, result.PokemonUpdated);
                 }
 
                 _logger.LogInformation("Database seeding completed successfully");

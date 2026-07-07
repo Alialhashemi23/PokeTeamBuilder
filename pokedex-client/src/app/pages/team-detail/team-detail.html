@@ -29,6 +29,9 @@
         @if (slot) {
           <li class="slot filled">
             <span class="dex-number">#{{ slot.pokemon.pokedexNumber }}</span>
+            @if (slot.pokemon.spriteUrl) {
+              <img class="slot-sprite" [src]="slot.pokemon.spriteUrl" [alt]="slot.pokemon.name" loading="lazy" />
+            }
             <h3 class="pokemon-name">{{ slot.pokemon.name }}</h3>
             <div class="type-badges">
               <span class="chip type-{{ slot.pokemon.primaryType.name.toLowerCase() }}">
@@ -76,6 +79,11 @@
           @for (pokemon of filteredPokemon(); track pokemon.id) {
             <li class="picker-row">
               <span class="dex-number">#{{ pokemon.pokedexNumber }}</span>
+              @if (pokemon.spriteUrl) {
+                <img class="picker-sprite" [src]="pokemon.spriteUrl" [alt]="pokemon.name" loading="lazy" />
+              } @else {
+                <span class="picker-sprite placeholder" aria-hidden="true"></span>
+              }
               <span class="pokemon-name">{{ pokemon.name }}</span>
               <span class="type-badges">
                 <span class="chip type-{{ pokemon.primaryType.name.toLowerCase() }}">

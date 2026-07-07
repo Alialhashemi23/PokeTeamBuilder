@@ -49,6 +49,34 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+// Zero-touch startup: apply migrations and seed an empty database so a fresh
+// clone works with `dotnet run` alone. Failures are logged but never block startup.
+using (var scope = app.Services.CreateScope())
+{
+    var startupLogger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    try
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<PokedexDbContext>();
+        await dbContext.Database.MigrateAsync();
+
+        if (!await dbContext.Pokemon.AnyAsync())
+        {
+            startupLogger.LogInformation("Pokemon table is empty - seeding from PokeAPI...");
+            var seeder = scope.ServiceProvider.GetRequiredService<IDatabaseSeeder>();
+            var seedResult = await seeder.SeedDatabaseAsync();
+            startupLogger.LogInformation(
+                "Startup seeding finished: {Added} added, {Errors} errors",
+                seedResult.PokemonAdded, seedResult.Errors.Count);
+        }
+    }
+    catch (Exception ex)
+    {
+        startupLogger.LogError(ex,
+            "Automatic migration/seeding failed. The API will start, but the database may be empty. " +
+            "You can retry via POST /api/admin/seed");
+    }
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

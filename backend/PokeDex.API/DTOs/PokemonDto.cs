@@ -18,6 +18,8 @@ namespace PokeDex.API.DTOs
         public int SpecialDefense { get; set; }
         public int Speed { get; set; }
 
+        public string? SpriteUrl { get; set; }
+
         // Types (nested objects for frontend)
         public PokemonTypeDto PrimaryType { get; set; } = null!;
         public PokemonTypeDto? SecondaryType { get; set; }

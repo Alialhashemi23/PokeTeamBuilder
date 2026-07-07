@@ -9,6 +9,7 @@ namespace PokeDex.Application.Services
     {
         public int PokemonFetched { get; set; }
         public int PokemonAdded { get; set; }
+        public int PokemonUpdated { get; set; }
         public int PokemonSkipped { get; set; }
         public List<string> Errors { get; set; } = new();
     }

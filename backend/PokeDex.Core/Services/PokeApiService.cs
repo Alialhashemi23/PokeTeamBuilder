@@ -68,7 +68,9 @@ namespace PokeDex.Core.Services
                     SpecialDefense = pokeApiData.stats.First(s => s.stat.name == "special-defense").base_stat,
                     Speed = pokeApiData.stats.First(s => s.stat.name == "speed").base_stat,
                     PrimaryType = pokeApiData.types.FirstOrDefault(t => t.slot == 1)?.type.name ?? string.Empty,
-                    SecondaryType = pokeApiData.types.FirstOrDefault(t => t.slot == 2)?.type.name
+                    SecondaryType = pokeApiData.types.FirstOrDefault(t => t.slot == 2)?.type.name,
+                    SpriteUrl = pokeApiData.sprites?.other?.official_artwork?.front_default
+                                ?? pokeApiData.sprites?.front_default
                 };
             }
             catch (Exception ex)
@@ -83,6 +85,24 @@ namespace PokeDex.Core.Services
             public string name { get; set; } = string.Empty;
             public List<PokemonStat> stats { get; set; } = new();
             public List<PokemonTypeSlot> types { get; set; } = new();
+            public SpriteData? sprites { get; set; }
+        }
+
+        private class SpriteData
+        {
+            public string? front_default { get; set; }
+            public OtherSprites? other { get; set; }
+        }
+
+        private class OtherSprites
+        {
+            [JsonProperty("official-artwork")]
+            public OfficialArtwork? official_artwork { get; set; }
+        }
+
+        private class OfficialArtwork
+        {
+            public string? front_default { get; set; }
         }
 
         private class PokemonStat

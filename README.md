@@ -8,8 +8,9 @@ PokeTeamBuilder helps players create, manage, and visualize Pokémon teams. It p
 
 ## 🚀 Features
 - **Team Builder** — create named teams, add/remove Pokémon (max 6 per team, no duplicates), rename and delete teams
-- **Bulk Pokémon Fetching** from PokeAPI with concurrency limits
-- **Database Seeding** endpoint (`POST /api/admin/seed`) — Gen 1 by default
+- **Official Artwork Sprites** — fetched from PokeAPI and shown throughout the UI
+- **Zero-Touch Startup** — migrations apply and the database seeds itself on first run
+- **Bulk Pokémon Fetching** from PokeAPI with concurrency limits; re-seed anytime via `POST /api/admin/seed`
 - **Clean Architecture** — Core / Data / Application / API layers with repositories and services
 - **Angular 21 UI** — teams list and team-builder pages with type-colored badges and a searchable Pokémon picker
 - **Tested** — xUnit tests for team rules (EF Core InMemory) and Vitest specs for the client services
@@ -61,13 +62,10 @@ pokedex-client/          Angular frontend
 **Backend** (requires .NET 9 SDK + SQL Server / LocalDB):
 ```bash
 cd backend
-dotnet ef database update --project PokeDex.Data --startup-project PokeDex.API
 dotnet run --project PokeDex.API
 ```
-Then seed the database once via Swagger (served at the root in development) or:
-```bash
-curl -X POST "https://localhost:7057/api/admin/seed?count=151"
-```
+On first run this applies migrations and seeds Gen 1 from PokeAPI automatically.
+To re-seed or fetch more Pokémon later: `POST /api/admin/seed?count=251` (Swagger is served at the root in development).
 
 **Frontend** (requires Node 20+):
 ```bash
@@ -88,6 +86,6 @@ cd pokedex-client && npm test      # frontend
 ## 🗺️ Roadmap
 Milestones are documented feature-by-feature in **[ROADMAP.md](ROADMAP.md)**:
 - ✅ **M0 — Core MVP**: ingestion, Pokémon + Teams API, team builder UI
-- 🔨 **M1 — Make It Feel Real**: sprites, zero-touch startup, template cleanup
-- 📋 **M2 — Pokédex Browsing** · **M3 — Accounts & Ownership** · **M4 — Team Analysis** · **M5 — Deployment**
+- ✅ **M1 — Make It Feel Real**: sprites, zero-touch startup, template cleanup
+- 🔨 **M2 — Pokédex Browsing** *(next up)* · 📋 **M3 — Accounts & Ownership** · **M4 — Team Analysis** · **M5 — Deployment**
 - 💭 **Backlog — Full Builder**: movesets, abilities, natures, EVs/IVs, sharing
