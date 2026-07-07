@@ -1,0 +1,61 @@
+<section class="page">
+  <header class="page-header">
+    <h1>Pokédex</h1>
+    <input
+      type="search"
+      placeholder="Search by name or number…"
+      [ngModel]="search()"
+      (ngModelChange)="search.set($event)"
+    />
+  </header>
+
+  @if (error()) {
+    <p class="error-banner">{{ error() }}</p>
+  }
+
+  @if (loading()) {
+    <p class="muted">Loading Pokédex…</p>
+  } @else {
+    <div class="type-filters">
+      @for (type of types(); track type) {
+        <button
+          class="chip type-{{ type.toLowerCase() }}"
+          [class.dimmed]="typeFilter() && typeFilter() !== type"
+          (click)="toggleType(type)"
+        >
+          {{ type }}
+        </button>
+      }
+    </div>
+
+    <p class="muted result-count">
+      {{ filtered().length }} of {{ allPokemon().length }} Pokémon
+    </p>
+
+    <ul class="dex-grid">
+      @for (pokemon of filtered(); track pokemon.id) {
+        <li>
+          <a class="dex-card" [routerLink]="['/pokedex', pokemon.id]">
+            <span class="dex-number">#{{ pokemon.pokedexNumber }}</span>
+            @if (pokemon.spriteUrl) {
+              <img class="dex-sprite" [src]="pokemon.spriteUrl" [alt]="pokemon.name" loading="lazy" />
+            } @else {
+              <span class="dex-sprite placeholder" aria-hidden="true"></span>
+            }
+            <h2 class="pokemon-name">{{ pokemon.name }}</h2>
+            <span class="type-badges">
+              <span class="chip type-{{ pokemon.primaryType.name.toLowerCase() }}">
+                {{ pokemon.primaryType.name }}
+              </span>
+              @if (pokemon.secondaryType; as secondary) {
+                <span class="chip type-{{ secondary.name.toLowerCase() }}">{{ secondary.name }}</span>
+              }
+            </span>
+          </a>
+        </li>
+      } @empty {
+        <li class="muted">No Pokémon match your search.</li>
+      }
+    </ul>
+  }
+</section>

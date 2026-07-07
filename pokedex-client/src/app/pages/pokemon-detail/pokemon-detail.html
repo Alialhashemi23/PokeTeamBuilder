@@ -1,0 +1,67 @@
+<section class="page">
+  <a routerLink="/pokedex" class="back-link">← Pokédex</a>
+
+  @if (error()) {
+    <p class="error-banner">{{ error() }}</p>
+  }
+
+  @if (loading()) {
+    <p class="muted">Loading…</p>
+  } @else if (pokemon(); as p) {
+    <div class="detail-layout">
+      <div class="portrait">
+        @if (p.spriteUrl) {
+          <img class="portrait-sprite" [src]="p.spriteUrl" [alt]="p.name" />
+        } @else {
+          <span class="portrait-sprite placeholder" aria-hidden="true"></span>
+        }
+        <span class="dex-number">#{{ p.pokedexNumber }}</span>
+        <h1 class="pokemon-name">{{ p.name }}</h1>
+        <div class="type-badges">
+          <span class="chip type-{{ p.primaryType.name.toLowerCase() }}">
+            {{ p.primaryType.name }}
+          </span>
+          @if (p.secondaryType; as secondary) {
+            <span class="chip type-{{ secondary.name.toLowerCase() }}">{{ secondary.name }}</span>
+          }
+        </div>
+      </div>
+
+      <div class="info">
+        <h2>Base Stats</h2>
+        <div class="stat-bars">
+          @for (stat of stats(); track stat.label) {
+            <div class="stat-row">
+              <span class="stat-label">{{ stat.label }}</span>
+              <span class="stat-value">{{ stat.value }}</span>
+              <div class="stat-track">
+                <div class="stat-fill" [style.width.%]="stat.percent"></div>
+              </div>
+            </div>
+          }
+          <div class="stat-row total">
+            <span class="stat-label">Total</span>
+            <span class="stat-value">{{ statTotal() }}</span>
+            <div class="stat-track"></div>
+          </div>
+        </div>
+
+        <h2>On Your Teams</h2>
+        @if (onTeams().length > 0) {
+          <ul class="team-links">
+            @for (team of onTeams(); track team.id) {
+              <li>
+                <a [routerLink]="['/teams', team.id]">{{ team.name }}</a>
+                <span class="muted">({{ team.members.length }} / 6)</span>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="muted">
+            Not on any team yet — <a routerLink="/teams">build one</a>.
+          </p>
+        }
+      </div>
+    </div>
+  }
+</section>

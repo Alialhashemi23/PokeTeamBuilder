@@ -1,0 +1,137 @@
+.back-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.detail-layout {
+  display: grid;
+  grid-template-columns: minmax(14rem, 1fr) 2fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 640px) {
+  .detail-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.portrait {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+}
+
+.portrait-sprite {
+  width: 12rem;
+  height: 12rem;
+  object-fit: contain;
+}
+
+.portrait-sprite.placeholder {
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1px dashed var(--border);
+}
+
+.portrait .dex-number {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.portrait .pokemon-name {
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.type-badges {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.info h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+}
+
+.info > h2:not(:first-child) {
+  margin-top: 2rem;
+}
+
+.stat-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: 5rem 3rem 1fr;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stat-label {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.stat-value {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.stat-track {
+  height: 0.6rem;
+  background: var(--bg);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.stat-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 1rem;
+}
+
+.stat-row.total .stat-label {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.team-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.team-links li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.team-links a {
+  color: var(--accent);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.team-links a:hover {
+  text-decoration: underline;
+}

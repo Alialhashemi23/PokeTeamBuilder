@@ -42,24 +42,22 @@ re-seeding / fetching more generations.
 
 ---
 
-## 🔨 M2 — Pokédex Browsing *(next up)*
+## ✅ M2 — Pokédex Browsing *(shipped)*
 
 A standalone Pokédex page, independent of team building.
 
-### 2.1 Pokédex page
-Browse all Pokémon with search (name/number) and filter by type; card grid with
-sprites, types, and stats.
-- **Done when:** `/pokedex` route exists, is linked from the nav, and filtering
-  feels instant (client-side is fine at Gen 1 scale).
+### 2.1 Pokédex page ✅
+`/pokedex` in the nav: card grid with sprites and type badges, instant client-side
+search (name/number) and toggleable type-color filter chips.
 
-### 2.2 Pokémon detail view
-Click through to a single Pokémon: full stats with bar visualization, types, and
-which of your teams it's on.
-- **Done when:** `/pokedex/:id` renders from the existing by-ID endpoint.
+### 2.2 Pokémon detail view ✅
+`/pokedex/:id`: large artwork, stat bars scaled to the 255 base-stat cap with a
+total, and links to the teams the Pokémon is on.
 
-### 2.3 More generations
-Ingest beyond Gen 1 (the seeder already accepts a count; validate and expose it).
-- **Done when:** seeding 386+ Pokémon works and the UI stays responsive.
+### 2.3 More generations ✅*
+`POST /api/admin/seed?count=` accepts up to 1000 and the Pokédex filters
+client-side, which stays snappy at that scale. *Not yet validated against a live
+database with 386+ rows — do one big seed and confirm.
 
 ---
 

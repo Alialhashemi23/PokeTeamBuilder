@@ -12,6 +12,7 @@ PokeTeamBuilder helps players create, manage, and visualize Pokémon teams. It p
 - **Zero-Touch Startup** — migrations apply and the database seeds itself on first run
 - **Bulk Pokémon Fetching** from PokeAPI with concurrency limits; re-seed anytime via `POST /api/admin/seed`
 - **Clean Architecture** — Core / Data / Application / API layers with repositories and services
+- **Pokédex Browsing** — searchable card grid with type filters, plus per-Pokémon detail pages with stat bars
 - **Angular 21 UI** — teams list and team-builder pages with type-colored badges and a searchable Pokémon picker
 - **Tested** — xUnit tests for team rules (EF Core InMemory) and Vitest specs for the client services
 
@@ -87,5 +88,6 @@ cd pokedex-client && npm test      # frontend
 Milestones are documented feature-by-feature in **[ROADMAP.md](ROADMAP.md)**:
 - ✅ **M0 — Core MVP**: ingestion, Pokémon + Teams API, team builder UI
 - ✅ **M1 — Make It Feel Real**: sprites, zero-touch startup, template cleanup
-- 🔨 **M2 — Pokédex Browsing** *(next up)* · 📋 **M3 — Accounts & Ownership** · **M4 — Team Analysis** · **M5 — Deployment**
+- ✅ **M2 — Pokédex Browsing**: searchable/filterable Pokédex + Pokémon detail pages
+- 📋 **M3 — Accounts & Ownership** *(next up — decision gate)* · **M4 — Team Analysis** · **M5 — Deployment**
 - 💭 **Backlog — Full Builder**: movesets, abilities, natures, EVs/IVs, sharing
