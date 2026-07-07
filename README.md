@@ -86,11 +86,8 @@ cd pokedex-client && npm test      # frontend
 ---
 
 ## 🗺️ Roadmap
-- [x] Pokémon ingestion from PokeAPI + seeding
-- [x] Pokémon REST endpoints
-- [x] Teams CRUD + membership rules (max 6, no duplicates)
-- [x] Angular teams list + team-builder UI
-- [ ] Pokédex browsing page (search/filter by type)
-- [ ] Team type-coverage analysis (weaknesses/resistances)
-- [ ] Pokémon sprites in the UI
-- [ ] Movesets, abilities, and natures per team slot
+Milestones are documented feature-by-feature in **[ROADMAP.md](ROADMAP.md)**:
+- ✅ **M0 — Core MVP**: ingestion, Pokémon + Teams API, team builder UI
+- 🔨 **M1 — Make It Feel Real**: sprites, zero-touch startup, template cleanup
+- 📋 **M2 — Pokédex Browsing** · **M3 — Accounts & Ownership** · **M4 — Team Analysis** · **M5 — Deployment**
+- 💭 **Backlog — Full Builder**: movesets, abilities, natures, EVs/IVs, sharing
