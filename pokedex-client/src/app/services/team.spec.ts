@@ -42,6 +42,14 @@ describe('TeamService', () => {
     req.flush({ id: 1, name: 'Kanto Squad', createdDate: '', members: [] });
   });
 
+  it('should GET the team analysis', () => {
+    service.getAnalysis(1).subscribe();
+
+    const req = httpMock.expectOne('/api/teams/1/analysis');
+    expect(req.request.method).toBe('GET');
+    req.flush({ defense: [], threats: [], unresisted: [], stats: [] });
+  });
+
   it('should DELETE the member slot when removing a team member', () => {
     service.removePokemon(1, 7).subscribe();
 

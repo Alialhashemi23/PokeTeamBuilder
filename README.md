@@ -14,6 +14,7 @@ PokeTeamBuilder helps players create, manage, and visualize Pokémon teams. It p
 - **Bulk Pokémon Fetching** from PokeAPI with concurrency limits; re-seed anytime via `POST /api/admin/seed`
 - **Clean Architecture** — Core / Data / Application / API layers with repositories and services
 - **Pokédex Browsing** — searchable card grid with type filters, plus per-Pokémon detail pages with stat bars
+- **Team Analysis** — live type-coverage report (threats, unresisted types) and average stat bars in the builder
 - **Angular 21 UI** — teams list and team-builder pages with type-colored badges and a searchable Pokémon picker
 - **Tested** — xUnit tests for team rules (EF Core InMemory) and Vitest specs for the client services
 - **Docker Support** — one `docker compose up --build` runs SQL Server + API + frontend
@@ -53,11 +54,17 @@ pokedex-client/          Angular frontend
 |--------|-------|-------------|
 | GET | `/api/teams` | All teams with members |
 | GET | `/api/teams/{id}` | Single team |
+| GET | `/api/teams/{id}/analysis` | Type coverage + stat analysis |
 | POST | `/api/teams` | Create a team `{ "name": "..." }` |
 | PUT | `/api/teams/{id}` | Rename a team |
 | DELETE | `/api/teams/{id}` | Delete a team |
 | POST | `/api/teams/{id}/pokemon` | Add a Pokémon `{ "pokemonId": 25 }` (max 6, no duplicates) |
 | DELETE | `/api/teams/{id}/pokemon/{teamPokemonId}` | Remove a member slot |
+
+### Types
+| Method | Route | Description |
+|--------|-------|-------------|
+| GET | `/api/types/effectiveness` | Full 18×18 type effectiveness chart |
 
 ### Admin
 | Method | Route | Description |
@@ -112,5 +119,6 @@ Milestones are documented feature-by-feature in **[ROADMAP.md](ROADMAP.md)**:
 - ✅ **M1 — Make It Feel Real**: sprites, zero-touch startup, template cleanup
 - ✅ **M2 — Pokédex Browsing**: searchable/filterable Pokédex + Pokémon detail pages
 - ✅ **M3 — Accounts & Ownership**: JWT auth, per-user teams
-- 🔨 **M4 — Team Analysis** *(next up)* · 📋 **M5 — Deployment** (containerization ✅)
+- ✅ **M4 — Team Analysis**: type coverage, threats, stat summaries
+- 📋 **M5 — Deployment**: containerization ✅; hosting + CI remain
 - 💭 **Backlog — Full Builder**: movesets, abilities, natures, EVs/IVs, sharing

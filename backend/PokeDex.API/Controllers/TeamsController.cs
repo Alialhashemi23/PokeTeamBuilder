@@ -12,11 +12,16 @@ namespace PokeDex.API.Controllers
     public class TeamsController : ControllerBase
     {
         private readonly ITeamService _teamService;
+        private readonly ITeamAnalysisService _analysisService;
         private readonly ILogger<TeamsController> _logger;
 
-        public TeamsController(ITeamService teamService, ILogger<TeamsController> logger)
+        public TeamsController(
+            ITeamService teamService,
+            ITeamAnalysisService analysisService,
+            ILogger<TeamsController> logger)
         {
             _teamService = teamService;
+            _analysisService = analysisService;
             _logger = logger;
         }
 
@@ -176,6 +181,29 @@ namespace PokeDex.API.Controllers
             {
                 _logger.LogError(ex, "Error removing member {TeamPokemonId} from team {TeamId}", teamPokemonId, id);
                 return StatusCode(500, "An error occurred while removing the Pokemon from the team");
+            }
+        }
+
+        /// <summary>
+        /// Type coverage and stat analysis for a team
+        /// </summary>
+        [HttpGet("{id}/analysis")]
+        public async Task<ActionResult<TeamAnalysis>> GetTeamAnalysis(int id)
+        {
+            try
+            {
+                var analysis = await _analysisService.AnalyzeAsync(id, CallerId);
+                if (analysis == null)
+                {
+                    return NotFound($"Team with ID {id} not found");
+                }
+
+                return Ok(analysis);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error analyzing team {TeamId}", id);
+                return StatusCode(500, "An error occurred while analyzing the team");
             }
         }
 

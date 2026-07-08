@@ -31,6 +31,7 @@ builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 // Application Services
 builder.Services.AddScoped<IDatabaseSeeder, DatabaseSeeder>();
 builder.Services.AddScoped<ITeamService, TeamService>();
+builder.Services.AddScoped<ITeamAnalysisService, TeamAnalysisService>();
 
 // Identity + JWT authentication
 builder.Services.AddIdentityCore<AppUser>(options =>

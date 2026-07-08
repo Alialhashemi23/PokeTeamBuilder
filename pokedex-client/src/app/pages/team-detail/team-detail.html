@@ -57,6 +57,69 @@
       }
     </ul>
 
+    @if (analysis(); as report) {
+      <section class="analysis">
+        <h2>Team Analysis</h2>
+
+        @if (report.threats.length > 0) {
+          <p class="analysis-callout threats">
+            ⚠️ Watch out for:
+            @for (type of report.threats; track type) {
+              <span class="chip type-{{ type.toLowerCase() }}">{{ type }}</span>
+            }
+          </p>
+        }
+        @if (report.unresisted.length > 0) {
+          <p class="analysis-callout unresisted">
+            Nobody resists:
+            @for (type of report.unresisted; track type) {
+              <span class="chip type-{{ type.toLowerCase() }}">{{ type }}</span>
+            }
+          </p>
+        }
+        @if (report.threats.length === 0 && report.unresisted.length === 0) {
+          <p class="analysis-callout solid">✅ Solid defensive coverage — every type is checked.</p>
+        }
+
+        <div class="coverage-grid">
+          @for (matchup of report.defense; track matchup.type) {
+            <div
+              class="coverage-cell"
+              [class.net-weak]="matchup.weak > matchup.resist + matchup.immune"
+              [class.net-safe]="matchup.weak < matchup.resist + matchup.immune"
+              [title]="matchup.type + ': ' + matchup.weak + ' weak, ' + matchup.resist + ' resist, ' + matchup.immune + ' immune'"
+            >
+              <span class="chip type-{{ matchup.type.toLowerCase() }}">{{ matchup.type }}</span>
+              <span class="coverage-counts">
+                @if (matchup.weak > 0) { <span class="count weak">{{ matchup.weak }}W</span> }
+                @if (matchup.resist > 0) { <span class="count resist">{{ matchup.resist }}R</span> }
+                @if (matchup.immune > 0) { <span class="count immune">{{ matchup.immune }}I</span> }
+                @if (matchup.weak === 0 && matchup.resist === 0 && matchup.immune === 0) {
+                  <span class="count neutral">—</span>
+                }
+              </span>
+            </div>
+          }
+        </div>
+
+        <h3>Average Base Stats</h3>
+        <div class="stat-bars">
+          @for (stat of report.stats; track stat.stat) {
+            <div class="stat-row">
+              <span class="stat-label">{{ stat.stat }}</span>
+              <span class="stat-value">{{ stat.average }}</span>
+              <div class="stat-track">
+                <div class="stat-fill" [style.width.%]="(stat.average / 255) * 100"></div>
+              </div>
+              <span class="stat-best muted" [title]="'Best: ' + stat.bestName + ' (' + stat.bestValue + ')'">
+                best: {{ stat.bestName }}
+              </span>
+            </div>
+          }
+        </div>
+      </section>
+    }
+
     <section class="picker">
       <header class="picker-header">
         <h2>Add Pokémon</h2>

@@ -79,23 +79,23 @@ them or claim them with a manual `UPDATE` if needed.
 
 ---
 
-## 📋 M4 — Team Analysis
+## ✅ M4 — Team Analysis *(shipped)*
 
-The fun differentiator. Stacks cleanly on top of any of the above.
+### 4.1 Type effectiveness data ✅
+The 18×18 Gen 6+ chart lives as a static `TypeChart` in Core (no DB round-trip
+needed for immutable game data); `GET /api/types/effectiveness` returns the full
+matrix and dual-type defensive multipliers are computed as the product.
 
-### 4.1 Type effectiveness data
-Store the 18×18 type matchup chart (seeded statically or from PokeAPI).
-- **Done when:** an endpoint returns effectiveness for any attacking/defending pair.
+### 4.2 Team coverage report ✅
+`GET /api/teams/{id}/analysis` (owner-scoped) returns per-type weak/resist/immune
+counts with per-member multipliers, plus derived **threats** (more members weak
+than covered) and **unresisted** types. The team builder shows the panel with
+threat callouts and a color-coded coverage grid that refreshes on every
+add/remove.
 
-### 4.2 Team coverage report
-Per team: defensive weaknesses/resistances (which attacking types hit 2×/4×, what
-you resist) and a summary of gaps.
-- **Done when:** the team builder page shows a coverage panel that updates as
-  Pokémon are added/removed.
-
-### 4.3 Stat overview
-Team-wide stat comparison (e.g., speed tiers, average bulk) to spot imbalances.
-- **Done when:** the builder shows a compact stats summary per team.
+### 4.3 Stat overview ✅
+The same analysis includes team averages for all six stats with the best holder
+of each, rendered as bars in the builder.
 
 ---
 

@@ -3,6 +3,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Team, TeamMember } from '../../models/team';
+import { TeamAnalysis } from '../../models/analysis';
 import { Pokemon } from '../../models/pokemon';
 import { TeamService } from '../../services/team';
 import { Pokemon as PokemonApi } from '../../services/pokemon';
@@ -21,6 +22,7 @@ export class TeamDetail implements OnInit {
   private pokemonApi = inject(PokemonApi);
 
   readonly team = signal<Team | null>(null);
+  readonly analysis = signal<TeamAnalysis | null>(null);
   readonly allPokemon = signal<Pokemon[]>([]);
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
@@ -65,6 +67,7 @@ export class TeamDetail implements OnInit {
       next: (team) => {
         this.team.set(team);
         this.loading.set(false);
+        this.refreshAnalysis();
       },
       error: (err) => {
         this.error.set(this.messageFrom(err));
@@ -89,6 +92,7 @@ export class TeamDetail implements OnInit {
       next: (updated) => {
         this.team.set(updated);
         this.error.set(null);
+        this.refreshAnalysis();
       },
       error: (err) => this.error.set(this.messageFrom(err)),
     });
@@ -104,6 +108,7 @@ export class TeamDetail implements OnInit {
       next: (updated) => {
         this.team.set(updated);
         this.error.set(null);
+        this.refreshAnalysis();
       },
       error: (err) => this.error.set(this.messageFrom(err)),
     });
@@ -134,6 +139,21 @@ export class TeamDetail implements OnInit {
 
   cancelRename(): void {
     this.renaming.set(false);
+  }
+
+  private refreshAnalysis(): void {
+    const team = this.team();
+    if (!team || team.members.length === 0) {
+      this.analysis.set(null);
+      return;
+    }
+
+    this.teamService.getAnalysis(team.id).subscribe({
+      next: (analysis) => this.analysis.set(analysis),
+      error: () => {
+        // Analysis is supplementary; the builder still works without it
+      },
+    });
   }
 
   private messageFrom(err: HttpErrorResponse): string {
