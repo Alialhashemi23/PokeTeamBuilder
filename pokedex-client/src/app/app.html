@@ -6,6 +6,12 @@
   <nav>
     <a routerLink="/teams" routerLinkActive="active">Teams</a>
     <a routerLink="/pokedex" routerLinkActive="active">Pokédex</a>
+    @if (auth.currentUser(); as email) {
+      <span class="user-email">{{ email }}</span>
+      <button class="logout-button" (click)="auth.logout()">Log out</button>
+    } @else {
+      <a routerLink="/login" routerLinkActive="active">Sign in</a>
+    }
   </nav>
 </header>
 

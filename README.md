@@ -7,6 +7,7 @@ PokeTeamBuilder helps players create, manage, and visualize Pokémon teams. It p
 ---
 
 ## 🚀 Features
+- **User Accounts** — register/login with JWT auth; teams are private to their owner
 - **Team Builder** — create named teams, add/remove Pokémon (max 6 per team, no duplicates), rename and delete teams
 - **Official Artwork Sprites** — fetched from PokeAPI and shown throughout the UI
 - **Zero-Touch Startup** — migrations apply and the database seeds itself on first run
@@ -41,7 +42,13 @@ pokedex-client/          Angular frontend
 | GET | `/api/pokemon/{id}` | Pokémon by database ID |
 | GET | `/api/pokemon/pokedex/{number}` | Pokémon by Pokédex number |
 
-### Teams
+### Auth
+| Method | Route | Description |
+|--------|-------|-------------|
+| POST | `/api/auth/register` | Create an account `{ "email": "...", "password": "..." }` → JWT |
+| POST | `/api/auth/login` | Sign in → JWT |
+
+### Teams *(require `Authorization: Bearer <token>`; scoped to the signed-in user)*
 | Method | Route | Description |
 |--------|-------|-------------|
 | GET | `/api/teams` | All teams with members |
@@ -104,5 +111,6 @@ Milestones are documented feature-by-feature in **[ROADMAP.md](ROADMAP.md)**:
 - ✅ **M0 — Core MVP**: ingestion, Pokémon + Teams API, team builder UI
 - ✅ **M1 — Make It Feel Real**: sprites, zero-touch startup, template cleanup
 - ✅ **M2 — Pokédex Browsing**: searchable/filterable Pokédex + Pokémon detail pages
-- 📋 **M3 — Accounts & Ownership** *(next up — decision gate)* · **M4 — Team Analysis** · **M5 — Deployment**
+- ✅ **M3 — Accounts & Ownership**: JWT auth, per-user teams
+- 🔨 **M4 — Team Analysis** *(next up)* · 📋 **M5 — Deployment** (containerization ✅)
 - 💭 **Backlog — Full Builder**: movesets, abilities, natures, EVs/IVs, sharing

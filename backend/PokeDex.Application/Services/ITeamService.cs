@@ -4,13 +4,13 @@ namespace PokeDex.Application.Services
 {
     public interface ITeamService
     {
-        Task<List<Team>> GetAllTeamsAsync();
-        Task<Team?> GetTeamByIdAsync(int id);
-        Task<TeamResult> CreateTeamAsync(string name);
-        Task<TeamResult> RenameTeamAsync(int teamId, string name);
-        Task<TeamResult> DeleteTeamAsync(int teamId);
-        Task<TeamResult> AddPokemonAsync(int teamId, int pokemonId);
-        Task<TeamResult> RemovePokemonAsync(int teamId, int teamPokemonId);
+        Task<List<Team>> GetAllTeamsAsync(string ownerId);
+        Task<Team?> GetTeamByIdAsync(int id, string ownerId);
+        Task<TeamResult> CreateTeamAsync(string name, string ownerId);
+        Task<TeamResult> RenameTeamAsync(int teamId, string name, string ownerId);
+        Task<TeamResult> DeleteTeamAsync(int teamId, string ownerId);
+        Task<TeamResult> AddPokemonAsync(int teamId, int pokemonId, string ownerId);
+        Task<TeamResult> RemovePokemonAsync(int teamId, int teamPokemonId, string ownerId);
     }
 
     public enum TeamError

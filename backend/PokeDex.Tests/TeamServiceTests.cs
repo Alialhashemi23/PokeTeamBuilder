@@ -9,6 +9,9 @@ namespace PokeDex.Tests
 {
     public class TeamServiceTests
     {
+        private const string Ash = "user-ash";
+        private const string Misty = "user-misty";
+
         /// <summary>
         /// Creates a TeamService backed by a fresh in-memory database seeded
         /// with the 18 Pokemon types and a handful of Pokemon.
@@ -48,7 +51,7 @@ namespace PokeDex.Tests
         {
             var (service, _) = CreateService();
 
-            var result = await service.CreateTeamAsync("  Kanto Squad  ");
+            var result = await service.CreateTeamAsync("  Kanto Squad  ", Ash);
 
             Assert.True(result.Success);
             Assert.NotNull(result.Team);
@@ -63,7 +66,7 @@ namespace PokeDex.Tests
         {
             var (service, _) = CreateService();
 
-            var result = await service.CreateTeamAsync(name);
+            var result = await service.CreateTeamAsync(name, Ash);
 
             Assert.False(result.Success);
             Assert.Equal(TeamError.InvalidName, result.Error);
@@ -74,7 +77,7 @@ namespace PokeDex.Tests
         {
             var (service, _) = CreateService();
 
-            var result = await service.CreateTeamAsync(new string('x', TeamService.MaxNameLength + 1));
+            var result = await service.CreateTeamAsync(new string('x', TeamService.MaxNameLength + 1), Ash);
 
             Assert.False(result.Success);
             Assert.Equal(TeamError.InvalidName, result.Error);
@@ -84,9 +87,9 @@ namespace PokeDex.Tests
         public async Task RenameTeam_UpdatesName()
         {
             var (service, _) = CreateService();
-            var created = await service.CreateTeamAsync("Old Name");
+            var created = await service.CreateTeamAsync("Old Name", Ash);
 
-            var result = await service.RenameTeamAsync(created.Team!.Id, "New Name");
+            var result = await service.RenameTeamAsync(created.Team!.Id, "New Name", Ash);
 
             Assert.True(result.Success);
             Assert.Equal("New Name", result.Team!.Name);
@@ -97,7 +100,7 @@ namespace PokeDex.Tests
         {
             var (service, _) = CreateService();
 
-            var result = await service.RenameTeamAsync(999, "New Name");
+            var result = await service.RenameTeamAsync(999, "New Name", Ash);
 
             Assert.False(result.Success);
             Assert.Equal(TeamError.TeamNotFound, result.Error);
@@ -107,9 +110,9 @@ namespace PokeDex.Tests
         public async Task DeleteTeam_RemovesTeam()
         {
             var (service, context) = CreateService();
-            var created = await service.CreateTeamAsync("Doomed");
+            var created = await service.CreateTeamAsync("Doomed", Ash);
 
-            var result = await service.DeleteTeamAsync(created.Team!.Id);
+            var result = await service.DeleteTeamAsync(created.Team!.Id, Ash);
 
             Assert.True(result.Success);
             Assert.Empty(context.Teams);
@@ -119,9 +122,9 @@ namespace PokeDex.Tests
         public async Task AddPokemon_AddsMemberWithNavigationLoaded()
         {
             var (service, _) = CreateService();
-            var created = await service.CreateTeamAsync("Squad");
+            var created = await service.CreateTeamAsync("Squad", Ash);
 
-            var result = await service.AddPokemonAsync(created.Team!.Id, 1);
+            var result = await service.AddPokemonAsync(created.Team!.Id, 1, Ash);
 
             Assert.True(result.Success);
             var member = Assert.Single(result.Team!.TeamPokemon);
@@ -134,9 +137,9 @@ namespace PokeDex.Tests
         public async Task AddPokemon_WhenPokemonMissing_ReturnsNotFound()
         {
             var (service, _) = CreateService();
-            var created = await service.CreateTeamAsync("Squad");
+            var created = await service.CreateTeamAsync("Squad", Ash);
 
-            var result = await service.AddPokemonAsync(created.Team!.Id, 999);
+            var result = await service.AddPokemonAsync(created.Team!.Id, 999, Ash);
 
             Assert.False(result.Success);
             Assert.Equal(TeamError.PokemonNotFound, result.Error);
@@ -146,10 +149,10 @@ namespace PokeDex.Tests
         public async Task AddPokemon_WhenAlreadyOnTeam_ReturnsDuplicate()
         {
             var (service, _) = CreateService();
-            var created = await service.CreateTeamAsync("Squad");
-            await service.AddPokemonAsync(created.Team!.Id, 1);
+            var created = await service.CreateTeamAsync("Squad", Ash);
+            await service.AddPokemonAsync(created.Team!.Id, 1, Ash);
 
-            var result = await service.AddPokemonAsync(created.Team.Id, 1);
+            var result = await service.AddPokemonAsync(created.Team.Id, 1, Ash);
 
             Assert.False(result.Success);
             Assert.Equal(TeamError.DuplicatePokemon, result.Error);
@@ -159,14 +162,14 @@ namespace PokeDex.Tests
         public async Task AddPokemon_WhenTeamFull_ReturnsTeamFull()
         {
             var (service, _) = CreateService();
-            var created = await service.CreateTeamAsync("Squad");
+            var created = await service.CreateTeamAsync("Squad", Ash);
             for (var pokemonId = 1; pokemonId <= TeamService.MaxTeamSize; pokemonId++)
             {
-                var added = await service.AddPokemonAsync(created.Team!.Id, pokemonId);
+                var added = await service.AddPokemonAsync(created.Team!.Id, pokemonId, Ash);
                 Assert.True(added.Success);
             }
 
-            var result = await service.AddPokemonAsync(created.Team!.Id, TeamService.MaxTeamSize + 1);
+            var result = await service.AddPokemonAsync(created.Team!.Id, TeamService.MaxTeamSize + 1, Ash);
 
             Assert.False(result.Success);
             Assert.Equal(TeamError.TeamFull, result.Error);
@@ -176,12 +179,12 @@ namespace PokeDex.Tests
         public async Task RemovePokemon_RemovesOnlyThatMember()
         {
             var (service, _) = CreateService();
-            var created = await service.CreateTeamAsync("Squad");
-            await service.AddPokemonAsync(created.Team!.Id, 1);
-            var afterSecondAdd = await service.AddPokemonAsync(created.Team.Id, 2);
+            var created = await service.CreateTeamAsync("Squad", Ash);
+            await service.AddPokemonAsync(created.Team!.Id, 1, Ash);
+            var afterSecondAdd = await service.AddPokemonAsync(created.Team.Id, 2, Ash);
             var memberToRemove = afterSecondAdd.Team!.TeamPokemon.First(tp => tp.PokemonId == 1);
 
-            var result = await service.RemovePokemonAsync(created.Team.Id, memberToRemove.Id);
+            var result = await service.RemovePokemonAsync(created.Team.Id, memberToRemove.Id, Ash);
 
             Assert.True(result.Success);
             var remaining = Assert.Single(result.Team!.TeamPokemon);
@@ -192,22 +195,85 @@ namespace PokeDex.Tests
         public async Task RemovePokemon_WhenMemberMissing_ReturnsNotFound()
         {
             var (service, _) = CreateService();
-            var created = await service.CreateTeamAsync("Squad");
+            var created = await service.CreateTeamAsync("Squad", Ash);
 
-            var result = await service.RemovePokemonAsync(created.Team!.Id, 999);
+            var result = await service.RemovePokemonAsync(created.Team!.Id, 999, Ash);
 
             Assert.False(result.Success);
             Assert.Equal(TeamError.MemberNotFound, result.Error);
         }
 
         [Fact]
+        public async Task GetAllTeams_ExcludesOtherUsersTeams()
+        {
+            var (service, _) = CreateService();
+            await service.CreateTeamAsync("Ash Team", Ash);
+            await service.CreateTeamAsync("Misty Team", Misty);
+
+            var ashTeams = await service.GetAllTeamsAsync(Ash);
+
+            var team = Assert.Single(ashTeams);
+            Assert.Equal("Ash Team", team.Name);
+        }
+
+        [Fact]
+        public async Task GetTeamById_HidesOtherUsersTeam()
+        {
+            var (service, _) = CreateService();
+            var created = await service.CreateTeamAsync("Ash Team", Ash);
+
+            var team = await service.GetTeamByIdAsync(created.Team!.Id, Misty);
+
+            Assert.Null(team);
+        }
+
+        [Fact]
+        public async Task RenameTeam_OnOtherUsersTeam_ReturnsNotFound()
+        {
+            var (service, context) = CreateService();
+            var created = await service.CreateTeamAsync("Ash Team", Ash);
+
+            var result = await service.RenameTeamAsync(created.Team!.Id, "Stolen", Misty);
+
+            Assert.False(result.Success);
+            Assert.Equal(TeamError.TeamNotFound, result.Error);
+            Assert.Equal("Ash Team", context.Teams.Single().Name);
+        }
+
+        [Fact]
+        public async Task DeleteTeam_OnOtherUsersTeam_ReturnsNotFound()
+        {
+            var (service, context) = CreateService();
+            var created = await service.CreateTeamAsync("Ash Team", Ash);
+
+            var result = await service.DeleteTeamAsync(created.Team!.Id, Misty);
+
+            Assert.False(result.Success);
+            Assert.Equal(TeamError.TeamNotFound, result.Error);
+            Assert.Single(context.Teams);
+        }
+
+        [Fact]
+        public async Task AddPokemon_ToOtherUsersTeam_ReturnsNotFound()
+        {
+            var (service, context) = CreateService();
+            var created = await service.CreateTeamAsync("Ash Team", Ash);
+
+            var result = await service.AddPokemonAsync(created.Team!.Id, 1, Misty);
+
+            Assert.False(result.Success);
+            Assert.Equal(TeamError.TeamNotFound, result.Error);
+            Assert.Empty(context.TeamPokemon);
+        }
+
+        [Fact]
         public async Task GetAllTeams_ReturnsTeamsWithMembers()
         {
             var (service, _) = CreateService();
-            var created = await service.CreateTeamAsync("Squad");
-            await service.AddPokemonAsync(created.Team!.Id, 3);
+            var created = await service.CreateTeamAsync("Squad", Ash);
+            await service.AddPokemonAsync(created.Team!.Id, 3, Ash);
 
-            var teams = await service.GetAllTeamsAsync();
+            var teams = await service.GetAllTeamsAsync(Ash);
 
             var team = Assert.Single(teams);
             var member = Assert.Single(team.TeamPokemon);

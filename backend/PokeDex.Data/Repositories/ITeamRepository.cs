@@ -4,7 +4,7 @@ namespace PokeDex.Data.Repositories
 {
     public interface ITeamRepository
     {
-        Task<List<Team>> GetAllAsync();
+        Task<List<Team>> GetAllByOwnerAsync(string ownerId);
         Task<Team?> GetByIdAsync(int id);
         Task<Team> AddAsync(Team team);
         void Remove(Team team);

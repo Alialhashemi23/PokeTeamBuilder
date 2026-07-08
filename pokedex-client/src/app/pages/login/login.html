@@ -1,0 +1,49 @@
+<section class="login-page">
+  <div class="login-card">
+    <h1>{{ mode() === 'login' ? 'Welcome back' : 'Create your account' }}</h1>
+    <p class="muted">
+      {{ mode() === 'login'
+        ? 'Sign in to manage your teams.'
+        : 'Register to start building Pokémon teams.' }}
+    </p>
+
+    @if (error()) {
+      <p class="error-banner">{{ error() }}</p>
+    }
+
+    <form (ngSubmit)="submit()">
+      <label>
+        Email
+        <input type="email" name="email" [(ngModel)]="email" autocomplete="email" required />
+      </label>
+      <label>
+        Password
+        <input
+          type="password"
+          name="password"
+          [(ngModel)]="password"
+          [autocomplete]="mode() === 'login' ? 'current-password' : 'new-password'"
+          minlength="8"
+          required
+        />
+      </label>
+      @if (mode() === 'register') {
+        <p class="muted password-hint">At least 8 characters, including a number.</p>
+      }
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="submitting() || !email.trim() || !password"
+      >
+        {{ mode() === 'login' ? 'Sign In' : 'Register' }}
+      </button>
+    </form>
+
+    <p class="switch-mode muted">
+      {{ mode() === 'login' ? "Don't have an account?" : 'Already have an account?' }}
+      <button type="button" class="link-button" (click)="toggleMode()">
+        {{ mode() === 'login' ? 'Register' : 'Sign in' }}
+      </button>
+    </p>
+  </div>
+</section>

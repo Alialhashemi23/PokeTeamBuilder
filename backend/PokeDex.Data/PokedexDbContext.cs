@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using PokeDex.Core.Models;
 
 namespace PokeDex.Data
 {
-    public class PokedexDbContext : DbContext
+    public class PokedexDbContext : IdentityDbContext<AppUser>
     {
         public PokedexDbContext(DbContextOptions<PokedexDbContext> options) : base(options)
         {
@@ -67,6 +68,8 @@ namespace PokeDex.Data
             {
                 entity.HasKey(t => t.Id);
                 entity.Property(t => t.Name).IsRequired().HasMaxLength(50);
+                entity.Property(t => t.OwnerId).HasMaxLength(450);
+                entity.HasIndex(t => t.OwnerId);
             });
 
             modelBuilder.Entity<TeamPokemon>(entity =>

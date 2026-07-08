@@ -12,9 +12,10 @@ namespace PokeDex.Data.Repositories
             _context = context;
         }
 
-        public async Task<List<Team>> GetAllAsync()
+        public async Task<List<Team>> GetAllByOwnerAsync(string ownerId)
         {
             return await _context.Teams
+                .Where(t => t.OwnerId == ownerId)
                 .Include(t => t.TeamPokemon)
                     .ThenInclude(tp => tp.Pokemon)
                         .ThenInclude(p => p.PrimaryType)

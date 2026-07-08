@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PokeDex.API.DTOs;
 using PokeDex.Application.Services;
@@ -5,6 +7,7 @@ using PokeDex.Application.Services;
 namespace PokeDex.API.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class TeamsController : ControllerBase
     {
@@ -25,7 +28,7 @@ namespace PokeDex.API.Controllers
         {
             try
             {
-                var teams = await _teamService.GetAllTeamsAsync();
+                var teams = await _teamService.GetAllTeamsAsync(CallerId);
                 return Ok(teams.Select(t => t.ToDto()).ToList());
             }
             catch (Exception ex)
@@ -43,7 +46,7 @@ namespace PokeDex.API.Controllers
         {
             try
             {
-                var team = await _teamService.GetTeamByIdAsync(id);
+                var team = await _teamService.GetTeamByIdAsync(id, CallerId);
                 if (team == null)
                 {
                     return NotFound($"Team with ID {id} not found");
@@ -66,7 +69,7 @@ namespace PokeDex.API.Controllers
         {
             try
             {
-                var result = await _teamService.CreateTeamAsync(request.Name);
+                var result = await _teamService.CreateTeamAsync(request.Name, CallerId);
                 if (!result.Success)
                 {
                     return ErrorResponse(result);
@@ -90,7 +93,7 @@ namespace PokeDex.API.Controllers
         {
             try
             {
-                var result = await _teamService.RenameTeamAsync(id, request.Name);
+                var result = await _teamService.RenameTeamAsync(id, request.Name, CallerId);
                 if (!result.Success)
                 {
                     return ErrorResponse(result);
@@ -113,7 +116,7 @@ namespace PokeDex.API.Controllers
         {
             try
             {
-                var result = await _teamService.DeleteTeamAsync(id);
+                var result = await _teamService.DeleteTeamAsync(id, CallerId);
                 if (!result.Success)
                 {
                     return ErrorResponse(result);
@@ -136,7 +139,7 @@ namespace PokeDex.API.Controllers
         {
             try
             {
-                var result = await _teamService.AddPokemonAsync(id, request.PokemonId);
+                var result = await _teamService.AddPokemonAsync(id, request.PokemonId, CallerId);
                 if (!result.Success)
                 {
                     return ErrorResponse(result);
@@ -161,7 +164,7 @@ namespace PokeDex.API.Controllers
         {
             try
             {
-                var result = await _teamService.RemovePokemonAsync(id, teamPokemonId);
+                var result = await _teamService.RemovePokemonAsync(id, teamPokemonId, CallerId);
                 if (!result.Success)
                 {
                     return ErrorResponse(result);
@@ -175,6 +178,8 @@ namespace PokeDex.API.Controllers
                 return StatusCode(500, "An error occurred while removing the Pokemon from the team");
             }
         }
+
+        private string CallerId => User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
         private ActionResult ErrorResponse(TeamResult result)
         {

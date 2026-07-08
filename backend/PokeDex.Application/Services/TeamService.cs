@@ -23,11 +23,17 @@ namespace PokeDex.Application.Services
             _logger = logger;
         }
 
-        public Task<List<Team>> GetAllTeamsAsync() => _teamRepository.GetAllAsync();
+        public Task<List<Team>> GetAllTeamsAsync(string ownerId) =>
+            _teamRepository.GetAllByOwnerAsync(ownerId);
 
-        public Task<Team?> GetTeamByIdAsync(int id) => _teamRepository.GetByIdAsync(id);
+        public async Task<Team?> GetTeamByIdAsync(int id, string ownerId)
+        {
+            var team = await _teamRepository.GetByIdAsync(id);
+            // Treat other users' teams as nonexistent so IDs can't be probed
+            return team?.OwnerId == ownerId ? team : null;
+        }
 
-        public async Task<TeamResult> CreateTeamAsync(string name)
+        public async Task<TeamResult> CreateTeamAsync(string name, string ownerId)
         {
             var nameError = ValidateName(name);
             if (nameError != null)
@@ -38,7 +44,8 @@ namespace PokeDex.Application.Services
             var team = new Team
             {
                 Name = name.Trim(),
-                CreatedDate = DateTime.UtcNow
+                CreatedDate = DateTime.UtcNow,
+                OwnerId = ownerId
             };
 
             await _teamRepository.AddAsync(team);
@@ -48,7 +55,7 @@ namespace PokeDex.Application.Services
             return TeamResult.Ok(team);
         }
 
-        public async Task<TeamResult> RenameTeamAsync(int teamId, string name)
+        public async Task<TeamResult> RenameTeamAsync(int teamId, string name, string ownerId)
         {
             var nameError = ValidateName(name);
             if (nameError != null)
@@ -56,10 +63,10 @@ namespace PokeDex.Application.Services
                 return nameError;
             }
 
-            var team = await _teamRepository.GetByIdAsync(teamId);
+            var team = await GetTeamByIdAsync(teamId, ownerId);
             if (team == null)
             {
-                return TeamResult.Fail(TeamError.TeamNotFound, $"Team with ID {teamId} not found");
+                return NotFound(teamId);
             }
 
             team.Name = name.Trim();
@@ -68,12 +75,12 @@ namespace PokeDex.Application.Services
             return TeamResult.Ok(team);
         }
 
-        public async Task<TeamResult> DeleteTeamAsync(int teamId)
+        public async Task<TeamResult> DeleteTeamAsync(int teamId, string ownerId)
         {
-            var team = await _teamRepository.GetByIdAsync(teamId);
+            var team = await GetTeamByIdAsync(teamId, ownerId);
             if (team == null)
             {
-                return TeamResult.Fail(TeamError.TeamNotFound, $"Team with ID {teamId} not found");
+                return NotFound(teamId);
             }
 
             _teamRepository.Remove(team);
@@ -83,12 +90,12 @@ namespace PokeDex.Application.Services
             return TeamResult.Ok();
         }
 
-        public async Task<TeamResult> AddPokemonAsync(int teamId, int pokemonId)
+        public async Task<TeamResult> AddPokemonAsync(int teamId, int pokemonId, string ownerId)
         {
-            var team = await _teamRepository.GetByIdAsync(teamId);
+            var team = await GetTeamByIdAsync(teamId, ownerId);
             if (team == null)
             {
-                return TeamResult.Fail(TeamError.TeamNotFound, $"Team with ID {teamId} not found");
+                return NotFound(teamId);
             }
 
             if (team.TeamPokemon.Count >= MaxTeamSize)
@@ -119,12 +126,12 @@ namespace PokeDex.Application.Services
             return TeamResult.Ok(updated);
         }
 
-        public async Task<TeamResult> RemovePokemonAsync(int teamId, int teamPokemonId)
+        public async Task<TeamResult> RemovePokemonAsync(int teamId, int teamPokemonId, string ownerId)
         {
-            var team = await _teamRepository.GetByIdAsync(teamId);
+            var team = await GetTeamByIdAsync(teamId, ownerId);
             if (team == null)
             {
-                return TeamResult.Fail(TeamError.TeamNotFound, $"Team with ID {teamId} not found");
+                return NotFound(teamId);
             }
 
             var member = team.TeamPokemon.FirstOrDefault(tp => tp.Id == teamPokemonId);
@@ -138,6 +145,9 @@ namespace PokeDex.Application.Services
 
             return TeamResult.Ok(team);
         }
+
+        private static TeamResult NotFound(int teamId) =>
+            TeamResult.Fail(TeamError.TeamNotFound, $"Team with ID {teamId} not found");
 
         private static TeamResult? ValidateName(string name)
         {

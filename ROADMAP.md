@@ -61,23 +61,21 @@ database with 386+ rows — do one big seed and confirm.
 
 ---
 
-## 📋 M3 — Accounts & Ownership *(decision gate)*
+## ✅ M3 — Accounts & Ownership *(shipped)*
 
-The biggest architectural fork: today every team belongs to everyone. Decide and
-implement before investing further, because it touches every table and endpoint.
+### 3.1 Authentication ✅
+ASP.NET Core Identity + JWT: `/api/auth/register` and `/api/auth/login` issue
+7-day tokens (HMAC, key via `Jwt__Key`). Angular has a login/register page,
+localStorage session with a `currentUser` signal, an interceptor that attaches
+the bearer token and logs out on 401, and a route guard on team pages. Swagger
+has an Authorize button for testing.
 
-### 3.1 Authentication
-Sign up / log in (ASP.NET Core Identity + JWT, or an external provider).
-- **Done when:** the API issues and validates tokens; the Angular app has
-  login/logout state and an HTTP interceptor.
-
-### 3.2 Team ownership
-Teams belong to a user; all team endpoints scope to the caller.
-- Migration adds `UserId` to `Team`; authorization enforced server-side.
-- **Done when:** two users can't see or modify each other's teams.
-
-*Explicit alternative:* stay single-user (a personal/local tool) and skip M3 —
-that's a valid product decision, but it should be made deliberately.
+### 3.2 Team ownership ✅
+`Team.OwnerId` (indexed, no Core→Identity coupling) scopes every team endpoint
+to the caller; other users' teams return 404 so IDs can't be probed. Verified
+live: two registered users could not see, rename, or modify each other's teams.
+Note: teams created before this migration have no owner and are hidden — delete
+them or claim them with a manual `UPDATE` if needed.
 
 ---
 
