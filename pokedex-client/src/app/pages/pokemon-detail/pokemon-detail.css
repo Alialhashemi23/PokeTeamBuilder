@@ -23,13 +23,14 @@
 }
 
 .portrait {
+  box-shadow: var(--shadow-soft);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 0.75rem;
+  border-radius: var(--radius);
   padding: 1.5rem;
 }
 
@@ -41,8 +42,8 @@
 
 .portrait-sprite.placeholder {
   border-radius: 50%;
-  background: var(--bg);
-  border: 1px dashed var(--border);
+  background: var(--sunken);
+  border: 1.5px dashed var(--border-strong);
 }
 
 .portrait .dex-number {
@@ -95,7 +96,7 @@
 
 .stat-track {
   height: 0.6rem;
-  background: var(--bg);
+  background: var(--sunken);
   border-radius: 1rem;
   overflow: hidden;
 }

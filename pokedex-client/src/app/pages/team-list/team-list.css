@@ -31,8 +31,15 @@
   gap: 0.75rem;
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 0.75rem;
-  padding: 1rem;
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-soft);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.team-card:hover {
+  box-shadow: var(--shadow-lift);
+  transform: translateY(-2px);
 }
 
 .team-card-link {
@@ -70,7 +77,8 @@
 
 .empty-state {
   text-align: center;
-  padding: 3rem 1rem;
-  border: 1px dashed var(--border);
-  border-radius: 0.75rem;
+  padding: 3.5rem 1rem;
+  border: 1.5px dashed var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--card-bg);
 }

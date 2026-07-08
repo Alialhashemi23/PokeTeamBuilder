@@ -9,8 +9,9 @@
   max-width: 24rem;
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 0.75rem;
-  padding: 2rem;
+  border-radius: var(--radius);
+  padding: 2.25rem;
+  box-shadow: var(--shadow-soft);
 }
 
 .login-card h1 {
@@ -31,13 +32,6 @@
   gap: 0.3rem;
   font-size: 0.9rem;
   font-weight: 500;
-}
-
-.login-card input {
-  padding: 0.45rem 0.7rem;
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  font: inherit;
 }
 
 .password-hint {
