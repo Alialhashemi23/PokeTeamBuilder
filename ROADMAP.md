@@ -105,10 +105,11 @@ Team-wide stat comparison (e.g., speed tiers, average bulk) to spot imbalances.
 
 Take it off localhost.
 
-### 5.1 Containerization
-Dockerfiles for API + client, docker-compose with SQL Server (or a switch to
-PostgreSQL/SQLite — decide here).
-- **Done when:** `docker compose up` serves the whole app locally.
+### 5.1 Containerization ✅ *(pulled forward)*
+Multi-stage Dockerfiles for API (SDK → aspnet) and client (Node → nginx with an
+`/api` reverse proxy), plus `docker-compose.yml` with SQL Server: health-checked
+DB startup, EF connection retry, persistent data volume, `SA_PASSWORD` override.
+`docker compose up --build` serves the app at :8080 with Swagger at :5080.
 
 ### 5.2 Hosting & config
 Environment-based connection strings and CORS, HTTPS, CI pipeline

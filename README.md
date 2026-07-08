@@ -15,6 +15,7 @@ PokeTeamBuilder helps players create, manage, and visualize Pokémon teams. It p
 - **Pokédex Browsing** — searchable card grid with type filters, plus per-Pokémon detail pages with stat bars
 - **Angular 21 UI** — teams list and team-builder pages with type-colored badges and a searchable Pokémon picker
 - **Tested** — xUnit tests for team rules (EF Core InMemory) and Vitest specs for the client services
+- **Docker Support** — one `docker compose up --build` runs SQL Server + API + frontend
 
 ---
 
@@ -59,6 +60,20 @@ pokedex-client/          Angular frontend
 ---
 
 ## 🏃 Running the App
+
+### 🐳 Docker (easiest)
+```bash
+docker compose up --build
+```
+That's it — SQL Server, the API, and the frontend all start together; migrations
+apply and Gen 1 seeds itself on first run. Open **http://localhost:8080**
+(Swagger: http://localhost:5080). Data persists in a named volume across
+restarts. Override the database password with `SA_PASSWORD=... docker compose up`.
+
+> Apple Silicon note: the SQL Server image is amd64-only — enable Rosetta
+> emulation in Docker Desktop settings.
+
+### 🛠️ Local development
 
 **Backend** (requires .NET 9 SDK + SQL Server / LocalDB):
 ```bash
